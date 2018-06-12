@@ -1,5 +1,10 @@
 package com.gameengine;
 
+import com.connection.ServerConnection;
+import com.connection.ServerResponse;
+import com.domain.Flag;
+import com.domain.Player;
+
 import java.util.Scanner;
 
 public class Menu {
@@ -8,6 +13,65 @@ public class Menu {
 
         System.out.println("Press: \n1-for Start\n2-for Instructions\n3-for Exit");
         System.out.println("\n");
+    }
+    public static void printMap(){
+        if(ServerConnection.object instanceof ServerResponse){
+
+           Integer[][] map = ((ServerResponse) ServerConnection.object).getMap().getFields();
+            Player player = ((ServerResponse) ServerConnection.object).getPlayers().get(0);
+
+            Flag flag  = ((ServerResponse) ServerConnection.object).getFlag();
+            for(Integer[] row : map){
+                for(Integer el : row){
+                    System.out.print(el+" ");
+                }
+                System.out.println();
+            }
+            System.out.println();
+            Integer[][] GMap = new Integer[map.length][map.length];
+            Integer[][] HMap = new Integer[map.length][map.length];
+            Integer[][] FMap = new Integer[map.length][map.length];
+            GMap[player.getX()][player.getY()] = 0;
+            GMap[flag.getX()][flag.getY()] = -1;
+
+
+
+            for (int i = 0; i < map.length; i++) {
+                System.arraycopy(GMap[i], 0, HMap[i], 0, GMap[i].length);
+            }
+            for (int i = 0; i < map.length; i++) {
+                System.arraycopy(GMap[i], 0, FMap[i], 0, GMap[i].length);
+            }
+
+
+            System.out.println();
+            for(Integer[] row : GMap){
+                for(Integer el : row){
+
+                    System.out.print(el+" ");
+                }
+                System.out.println();
+            }
+            System.out.println();
+            for(Integer[] row : HMap){
+                for(Integer el : row){
+
+                    System.out.print(el+" ");
+                }
+                System.out.println();
+            }
+            System.out.println();
+            for(Integer[] row : FMap){
+                for(Integer el : row){
+
+                    System.out.print(el+" ");
+                }
+                System.out.println();
+            }
+
+
+            System.out.println();
+        }
     }
 
     public static void getSelectedOption() {
@@ -33,43 +97,6 @@ public class Menu {
         }
     }
 
-    public static String getSelectedMovement() {
-
-        Scanner scanner = new Scanner(System.in);
-        String move = scanner.nextLine().toUpperCase();
-
-        while (!move.equals("U") || !move.equals("R") || !move.equals("D") || !move.equals("L") || !move.equals("u") || !move.equals("r") || !move.equals("d") || !move.equals("l")) {
-            move = scanner.nextLine().toUpperCase();
-            switch (move) {
-                case ("U"): {
-                    move = "UP";
-                    System.out.println("You've chosen going " + move + ".");
-                    break;
-                }
-                case ("R"): {
-                    move = "RIGHT";
-                    System.out.println("You've chosen going " + move + ".");
-                    break;
-                }
-                case ("D"): {
-                    move = "DOWN";
-                    System.out.println("You've chosen going " + move + ".");
-                    break;
-                }
-                case ("L"): {
-                    move = "LEFT";
-                    System.out.println("You've chosen going " + move + ".");
-                    break;
-                }
-                default: {
-                    System.out.println("Enter Correct move.");
-
-                }
-            }
-
-        }
-        return move;
-    }
 
     public static void printInstructions() {
         System.out.println("INSTRUCTIONS:\n");
