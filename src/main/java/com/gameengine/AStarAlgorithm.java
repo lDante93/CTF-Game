@@ -75,6 +75,10 @@ public class AStarAlgorithm {
             }
         }
         System.out.println();
+        System.out.println("END OF " + Main.iteration +" ITERATION.");
+        Main.iteration++;
+        System.out.println();
+        System.out.println();
         System.out.println();
     }
 
@@ -93,7 +97,10 @@ public class AStarAlgorithm {
             }
         }
     }
-
+    public static void printOpenAndClosedList(){
+        System.out.println("OPEN LIST: " + AStarAlgorithm.openList);
+        System.out.println("CLOSED LIST: " + AStarAlgorithm.closedList + "\n");
+    }
 
     public static void setFlagLocation(Flag flag) {
         for (MapMemory mapMemory : mapMemoryList) {

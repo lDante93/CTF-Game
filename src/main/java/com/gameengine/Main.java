@@ -8,28 +8,33 @@ public class Main {
     static Player player;
     static Flag flag;
     static MapMemory bestMapMemoryToMove;
+    static Integer iteration = 1;
 
     public static void main(String[] args) {
         initialiseMap();
+        AStarAlgorithm.printOpenAndClosedList();
         movePlayer();
-        prepareOpenListAndCalculateAlgorithmValues();
-        movePlayer();
-
-        if (bestMapMemoryToMove != null && bestMapMemoryToMove.getIsFlag() == true && bestMapMemoryToMove.getIsPlayer() == true) {
-            System.out.println("END OF GAME, FOUND FLAG");
-        }
-        //PRINTS MAPMEMORY
         AStarAlgorithm.printMapMemory();
+        while (!(bestMapMemoryToMove != null && bestMapMemoryToMove.getIsFlag() == true && bestMapMemoryToMove.getIsPlayer() == true)) {
+
+            prepareOpenListAndCalculateAlgorithmValues();
+            AStarAlgorithm.printOpenAndClosedList();
+
+            movePlayer();
+            AStarAlgorithm.printMapMemory();
+
+        }
+        System.out.println("END OF GAME, FOUND FLAG");
+        System.out.println(bestMapMemoryToMove);
 
 
     }
-    public static void prepareOpenListAndCalculateAlgorithmValues(){
+
+
+    public static void prepareOpenListAndCalculateAlgorithmValues() {
         AStarAlgorithm.fillOpenList();
         AStarAlgorithm.calculateAlgorithmValuesForOpenList(player, flag);
-        System.out.println("OPEN LIST: " + AStarAlgorithm.openList);
-        System.out.println("CLOSED LIST: " + AStarAlgorithm.closedList + "\n");
-        //PRINTS MAPMEMORY
-        AStarAlgorithm.printMapMemory();
+
     }
 
     public static void movePlayer() {
@@ -38,8 +43,7 @@ public class Main {
         player.setX(bestMapMemoryToMove.getX());
         player.setY(bestMapMemoryToMove.getY());
         AStarAlgorithm.setPlayerLocationAndAddToClosedListAndDeleteOldFromOpenList(player);
-        //PRINTS MAPMEMORY
-        AStarAlgorithm.printMapMemory();
+
     }
 
     public static void initialiseMap() {
@@ -49,7 +53,7 @@ public class Main {
         player.setY(0);
         flag = new Flag();
         flag.setX(1);
-        flag.setY(1);
+        flag.setY(2);
 
         //INITIALISE MAPMEMORY LIST AND OBJECTS
         AStarAlgorithm.mapMemoryList = AStarAlgorithm.initialiseMaps();
@@ -64,10 +68,6 @@ public class Main {
 
         //CALCULATE VALUES
         AStarAlgorithm.calculateAlgorithmValuesForOpenList(player, flag);
-        System.out.println("OPEN LIST: " + AStarAlgorithm.openList);
-        System.out.println("CLOSED LIST: " + AStarAlgorithm.closedList + "\n");
-        //PRINTS MAPMEMORY
-        AStarAlgorithm.printMapMemory();
     }
 
 //        Gson gson = new Gson();
