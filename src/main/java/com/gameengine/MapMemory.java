@@ -13,5 +13,35 @@ public class MapMemory {
     private Integer FMapValue;
     private Boolean isPlayer = false;
     private Boolean isFlag = false;
+    private MapMemory parentNode;
+
+    @Override
+    public String toString() {
+        if(parentNode==null) {
+            return "MapMemory{" +
+                    "x=" + x +
+                    ", y=" + y +
+                    ", MapValue=" + MapValue +
+                    ", GMapValue=" + GMapValue +
+                    ", HMapValue=" + HMapValue +
+                    ", FMapValue=" + FMapValue +
+                    ", isPlayer=" + isPlayer +
+                    ", isFlag=" + isFlag +
+                    ", parentNode=" + parentNode +
+                    '}';
+        }else{
+            return "MapMemory{" +
+                    "x=" + x +
+                    ", y=" + y +
+                    ", MapValue=" + MapValue +
+                    ", GMapValue=" + GMapValue +
+                    ", HMapValue=" + HMapValue +
+                    ", FMapValue=" + FMapValue +
+                    ", isPlayer=" + isPlayer +
+                    ", isFlag=" + isFlag +
+                    ", parentNode=(x:" + parentNode.getX() +", y:"+parentNode.getY()+"}"+
+                    '}';
+        }
+    }
 
 }

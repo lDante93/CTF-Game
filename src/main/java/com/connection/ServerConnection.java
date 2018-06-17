@@ -1,5 +1,7 @@
 package com.connection;
 
+import com.domain.Flag;
+import com.domain.Player;
 import com.gameengine.Colours;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -120,4 +122,5 @@ public class ServerConnection {
         }
 
     }
+
 }

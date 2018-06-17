@@ -5,91 +5,55 @@ import com.domain.Player;
 
 public class Main {
 
-    static Player player;
-    static Flag flag;
-    static MapMemory bestMapMemoryToMove;
-    static Integer iteration = 1;
 
     public static void main(String[] args) {
-        initialiseMap();
-        AStarAlgorithm.printOpenAndClosedList();
-        movePlayer();
-        AStarAlgorithm.printMapMemory();
-        while (!(bestMapMemoryToMove != null && bestMapMemoryToMove.getIsFlag() == true && bestMapMemoryToMove.getIsPlayer() == true)) {
+        MapService.player = new Player();
+        MapService.player.setX(1);
+        MapService.player.setY(1);
+        MapService.flag = new Flag();
+        MapService.flag.setX(4);
+        MapService.flag.setY(4);
 
-            prepareOpenListAndCalculateAlgorithmValues();
+        MapService.initialiseValuesForMaps();
+        MapService.setFlagLocation();
+        MapService.setPlayerLocation();
+        AStarAlgorithm.addPlayerLocToClosedList();
+        AStarAlgorithm.setPlayerLocAsCurrentExpandNode();
+        AStarAlgorithm.calculateHeuresticForMapMemoryList();
+
+        while (AStarAlgorithm.currentExpandNode.getIsFlag() == false) {
+            AStarAlgorithm.addLastCurrentNodeToClosedListAndDeleteFromOpenList();
+            AStarAlgorithm.fillOpenListAndAddParentNodeToThem();
+            AStarAlgorithm.calculateAlgorithmValuesForOpenList();
+            AStarAlgorithm.getNodeWithBestFValueAsCurrentExpandNode();
+            AStarAlgorithm.printCurrentExpandNode();
             AStarAlgorithm.printOpenAndClosedList();
-
-            movePlayer();
-            AStarAlgorithm.printMapMemory();
-
+            MapService.printMapMemory();
+            AStarAlgorithm.checkIfCurrentExpandNodeHasFlag();
         }
-        System.out.println("END OF GAME, FOUND FLAG");
-        System.out.println(bestMapMemoryToMove);
 
-
-    }
-
-
-    public static void prepareOpenListAndCalculateAlgorithmValues() {
-        AStarAlgorithm.fillOpenList();
-        AStarAlgorithm.calculateAlgorithmValuesForOpenList(player, flag);
-
-    }
-
-    public static void movePlayer() {
-        bestMapMemoryToMove = AStarAlgorithm.movePlayerInProperDirection();
-        //MOVE DOWN
-        player.setX(bestMapMemoryToMove.getX());
-        player.setY(bestMapMemoryToMove.getY());
-        AStarAlgorithm.setPlayerLocationAndAddToClosedListAndDeleteOldFromOpenList(player);
-
-    }
-
-    public static void initialiseMap() {
-        //MOCKS
-        player = new Player();
-        player.setX(0);
-        player.setY(0);
-        flag = new Flag();
-        flag.setX(1);
-        flag.setY(2);
-
-        //INITIALISE MAPMEMORY LIST AND OBJECTS
-        AStarAlgorithm.mapMemoryList = AStarAlgorithm.initialiseMaps();
-
-        //SET OPEN/CLOSED LISTS
-        AStarAlgorithm.setPlayerLocationAndAddToClosedListAndDeleteOldFromOpenList(player);
-        AStarAlgorithm.setFlagLocation(flag);
-        AStarAlgorithm.fillOpenList();
-
-        //PRINTS MAP
-        AStarAlgorithm.print2DIntegerArray();
-
-        //CALCULATE VALUES
-        AStarAlgorithm.calculateAlgorithmValuesForOpenList(player, flag);
-    }
-
-//        Gson gson = new Gson();
-//        //First turn
+        //First turn
 //        Scanner scanner = new Scanner(System.in);
 //        String option;
-//
 //
 //        try {
 //            ServerConnection.initialiseConnection();
 //            ServerConnection.serverRequest("Connect", "Player One", null);
-//            if(ServerConnection.object==null){
+//            if (ServerConnection.object == null) {
 //                Thread.sleep(500);
 //            }
+//            AStarAlgorithm.getObjectsFromServer();
+//            AStarAlgorithm.initialiseMap();
+//            AStarAlgorithm.printOpenAndClosedList();
+//            AStarAlgorithm.printMapMemory();
+//            AStarAlgorithm.getNodeWithBestFValueAsCurrentExpandNode();
 //
-//            Menu.printMap();
-//            ServerConnection.object=null;
+//            ServerConnection.object = null;
 //
 //
 //            System.out.println("Press Enter.");
 //            option = scanner.nextLine();
-//            if(option!=null) {
+//            if (option != null) {
 //
 //                ServerConnection.serverRequest("Move", "Player One", "RIGHT");
 //                Thread.sleep(500);
@@ -98,10 +62,14 @@ public class Main {
 //            }
 //
 //
-//
 //        } catch (URISyntaxException e) {
 //            e.printStackTrace();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
 //        }
+
+
+    }
 
 
 }
