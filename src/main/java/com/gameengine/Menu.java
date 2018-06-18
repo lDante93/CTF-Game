@@ -9,40 +9,28 @@ import java.util.Scanner;
 
 public class Menu {
 
+    public static Integer option;
+
     public static void printMenu() {
 
-        System.out.println("Press: \n1-for Start\n2-for Instructions\n3-for Exit");
+        System.out.println("Press: \n1-for Start\n2-for Start with Steps\n3-for Exit");
         System.out.println("\n");
     }
 
 
-    public static void getSelectedOption() {
+    public static void runProperGameMode() {
         System.out.println("Welcome to My Game!\n");
         printMenu();
 
         Scanner scanner = new Scanner(System.in);
-        Integer option;
+
 
         option = Integer.parseInt(scanner.nextLine());
 
-        while (option != 1) {
-
-
-            if (option == 1) {
-            } else if (option == 2) {
-                printInstructions();
-                printMenu();
-            } else if (option == 3) {
+            if (option == 3) {
                 System.exit(0);
             }
-            option = Integer.parseInt(scanner.nextLine());
-        }
-    }
 
-
-    public static void printInstructions() {
-        System.out.println("INSTRUCTIONS:\n");
-        System.out.println("\n");
     }
 
 

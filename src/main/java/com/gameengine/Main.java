@@ -1,6 +1,5 @@
 package com.gameengine;
 
-import com.connection.InitialiseConnectionResponse;
 import com.connection.ServerConnection;
 import com.connection.ServerResponse;
 import com.domain.MovePoint;
@@ -12,10 +11,9 @@ public class Main {
 
 
     public static void main(String[] args) {
-
+        Menu.runProperGameMode();
 
         try {
-
             //INITIALISE CONNECTION WITH PLAYER NAME
             ServerConnection.initialiseConnection();
             ServerConnection.serverRequest("Connect", "Lukasz Franczyk", null);
@@ -27,7 +25,6 @@ public class Main {
 
             //GET MOVEPOINTS LIST FROM ALGORITHM
             List<MovePoint> movePointsList = getMoveListFromAlgorithm();
-            System.out.println(movePointsList);
             moveToDestination(movePointsList);
 
 
@@ -39,18 +36,18 @@ public class Main {
 
 
     }
+
     public static void moveToDestination(List<MovePoint> movePointsList) throws InterruptedException {
         Scanner scanner = new Scanner(System.in);
         String option;
         String directionToMove = null;
         //MOVING
-        while ((MapService.player.getHasFlag() == false) || !((MapService.player.getX()==MapService.player.getBasePosition().getX()) && (MapService.player.getY()==MapService.player.getBasePosition().getY()))) {
+        while ((MapService.player.getHasFlag() == false) || !((MapService.player.getX() == MapService.player.getBasePosition().getX()) && (MapService.player.getY() == MapService.player.getBasePosition().getY()))) {
             MovePoint movePoint = movePointsList.remove(movePointsList.size() - 1);
             if (MapService.player.getMovesLeft() < 4.5) {
                 if (getMapMemoryMapValue(movePoint) > MapService.player.getMovesLeft()) {
-                    System.out.println(getMapMemoryMapValue(movePoint));
                     directionToMove = "NO_MOVE";
-                }else{
+                } else {
                     directionToMove = getMoveDirection(movePoint);
                 }
             } else {
@@ -59,16 +56,19 @@ public class Main {
             AStarAlgorithm.openList.clear();
             AStarAlgorithm.closedList.clear();
             MapService.mapMemoryList.clear();
-
-            System.out.println(movePoint + " " + directionToMove);
-            System.out.println("Press Enter.");
-            option = scanner.nextLine();
-            if (option != null) {
+            if(Menu.option==2) {
+                System.out.println("Press Enter.");
+                option = scanner.nextLine();
+                if (option != null) {
+                    ServerConnection.objectList.clear();
+                    ServerConnection.serverRequest("Move", "Lukasz Franczyk", directionToMove);
+                    Thread.sleep(100);
+                }
+            }else if(Menu.option==1){
                 ServerConnection.objectList.clear();
                 ServerConnection.serverRequest("Move", "Lukasz Franczyk", directionToMove);
                 Thread.sleep(100);
             }
-
 
             getServerResponse();
             initialiseAlgorithm();
@@ -76,18 +76,17 @@ public class Main {
 
 
         }
-        System.out.println("HAVE A FLAG");
     }
 
     public static Double getMapMemoryMapValue(MovePoint movePoint) {
         for (MapMemory mapMemory : MapService.mapMemoryList) {
-            if(MapService.player.getHasFlag()){
+            if (MapService.player.getHasFlag()) {
                 if ((movePoint.getX() == mapMemory.getX()) && (movePoint.getY() == mapMemory.getY())) {
-                    return mapMemory.getMapValue()*1.5;
+                    return mapMemory.getMapValue() * 1.5;
                 }
-            }else{
+            } else {
                 if ((movePoint.getX() == mapMemory.getX()) && (movePoint.getY() == mapMemory.getY())) {
-                    return mapMemory.getMapValue()*1.0;
+                    return mapMemory.getMapValue() * 1.0;
                 }
             }
 
@@ -100,30 +99,29 @@ public class Main {
         ServerResponse serverResponse = null;
 
 
-            while (ServerConnection.objectList.size()<2) {
-                Thread.sleep(100);
-            }
+        while (ServerConnection.objectList.size() < 2) {
+            Thread.sleep(100);
+        }
         for (Object object : ServerConnection.objectList) {
             if (object instanceof ServerResponse) {
                 serverResponse = (ServerResponse) object;
                 MapService.map = serverResponse.getMap().getFields();
-                System.out.println(MapService.playerId);
-                if(serverResponse.getPlayers().size()>1){
+                if (serverResponse.getPlayers().size() > 1) {
                     MapService.player = serverResponse.getPlayers().get(MapService.playerId);
-                }else{
+                } else {
                     MapService.player = serverResponse.getPlayers().get(0);
                 }
-                if(MapService.player.getHasFlag()==false) {
+                if (MapService.player.getHasFlag() == false) {
                     MovePoint destination = new MovePoint(serverResponse.getFlag().getX(), serverResponse.getFlag().getY());
                     MapService.destinationCoordinates = destination;
-                }else{
+                } else {
                     MovePoint destination = new MovePoint(MapService.player.getBasePosition().getX(), MapService.player.getBasePosition().getY());
                     MapService.destinationCoordinates = destination;
                 }
             }
         }
         if (serverResponse == null) {
-             throw new RuntimeException("NO SERVER RESPONSE");
+            throw new RuntimeException("NO SERVER RESPONSE");
         }
     }
 
@@ -165,7 +163,7 @@ public class Main {
             AStarAlgorithm.fillOpenListAndAddParentNodeToThem();
             AStarAlgorithm.calculateAlgorithmValuesForOpenList();
             AStarAlgorithm.getNodeWithBestFValueAsCurrentExpandNode();
-           // AStarAlgorithm.printCurrentExpandNode();
+            // AStarAlgorithm.printCurrentExpandNode();
             //AStarAlgorithm.printOpenAndClosedList();
             MapService.printMapMemory();
             AStarAlgorithm.checkIfCurrentExpandNodeHasFlag();
@@ -173,7 +171,6 @@ public class Main {
         }
 
         List<MovePoint> movePointsList = AStarAlgorithm.getMovePointsList();
-        System.out.println(movePointsList);
         return movePointsList;
 
     }
