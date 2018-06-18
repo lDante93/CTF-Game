@@ -13,7 +13,7 @@ public class MapService {
     static Player player;
     static MovePoint destinationCoordinates;
     static Integer iteration = 1;
-
+    public static Integer playerId;
 
 
     public static void initialiseValuesForMaps() {
@@ -60,7 +60,6 @@ public class MapService {
                 }
 
         }
-        System.out.println("BEST F VALUE: " + mapMemoryWithBestFValue);
         return mapMemoryWithBestFValue;
     }
 
@@ -90,12 +89,7 @@ public class MapService {
 //                System.out.println();
 //            }
 //        }
-        System.out.println();
-        System.out.println("END OF " + iteration + " ITERATION.");
         iteration++;
-        System.out.println();
-        System.out.println();
-        System.out.println();
     }
 
     public static void print2DIntegerArray() {

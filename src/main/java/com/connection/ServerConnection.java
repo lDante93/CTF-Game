@@ -3,6 +3,7 @@ package com.connection;
 import com.domain.Flag;
 import com.domain.Player;
 import com.gameengine.Colours;
+import com.gameengine.MapService;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -42,6 +43,7 @@ public class ServerConnection {
                         InitialiseConnectionResponse initialiseConnectionResponse = gson.fromJson(message, InitialiseConnectionResponse.class);
                         System.out.println("OBJECT: " + initialiseConnectionResponse);
                         objectList.add(initialiseConnectionResponse);
+                        MapService.playerId = initialiseConnectionResponse.getPlayerId();
                         break;
                     }
                     case "MoveRequest": {
@@ -60,6 +62,14 @@ public class ServerConnection {
                         ErrorResponse errorResponse = gson.fromJson(message, ErrorResponse.class);
                         System.out.println("OBJECT: " + errorResponse);
                         objectList.add(errorResponse);
+                        break;
+                    }
+                    case "GameOver":{
+                        mWs.close();
+                        System.out.println(Colours.CYAN_BOLD_BRIGHT);
+                        System.out.println("END OF GAME!");
+                        System.out.println(Colours.RESET);
+                        System.exit(0);
                         break;
                     }
                 }
@@ -114,7 +124,7 @@ public class ServerConnection {
             case "Move": {
                 MoveRequest moveRequest = new MoveRequest();
                 moveRequest.setType(type);
-                moveRequest.setPlayerId(0);
+                moveRequest.setPlayerId(MapService.playerId);
                 moveRequest.setMove(direction);
                 String requestJson = gson.toJson(moveRequest);
                 System.out.print(Colours.GREEN_BOLD_BRIGHT);

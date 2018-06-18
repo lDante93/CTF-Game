@@ -16,8 +16,12 @@ public class AStarAlgorithm {
 
     public static void calculateAlgorithmValuesForOpenList() {
         for (MapMemory mapMemory : openList) {
-            Integer GValue = mapMemory.getMapValue();
-            Integer FValue = GValue + mapMemory.getHMapValue();
+            Double GValue = mapMemory.getMapValue() * 1.0;
+            if (MapService.player.getHasFlag() == true) {
+
+                GValue = mapMemory.getMapValue() * 1.5;
+            }
+            Double FValue = GValue + mapMemory.getHMapValue();
             mapMemory.setGMapValue(GValue);
             mapMemory.setFMapValue(FValue);
         }
@@ -39,10 +43,10 @@ public class AStarAlgorithm {
     }
 
     public static void addLastCurrentNodeToClosedListAndDeleteFromOpenList() {
-        if (currentExpandNode.getIsPlayer()==false) {
+        if (currentExpandNode.getIsPlayer() == false) {
             for (MapMemory mapMemory : MapService.mapMemoryList) {
 
-                if ((mapMemory.getX() == currentExpandNode.getX()) && (mapMemory.getY() == currentExpandNode.getY()) ) {
+                if ((mapMemory.getX() == currentExpandNode.getX()) && (mapMemory.getY() == currentExpandNode.getY())) {
                     closedList.add(mapMemory);
 
                     if (openList.contains(mapMemory)) {
@@ -85,14 +89,14 @@ public class AStarAlgorithm {
         for (MapMemory mapMemory : MapService.mapMemoryList) {
             //UP
             if ((mapMemory.getX() == currentExpandNode.getX()) && ((mapMemory.getY() + 1) == currentExpandNode.getY())) {
-                if (!closedList.contains(mapMemory)&&!openList.contains(mapMemory)) {
+                if (!closedList.contains(mapMemory) && !openList.contains(mapMemory)) {
                     mapMemory.setParentNode(currentExpandNode);
                     openList.add(mapMemory);
                 }
             }
             //RIGHT
             if ((mapMemory.getX() - 1 == currentExpandNode.getX()) && ((mapMemory.getY()) == currentExpandNode.getY())) {
-                if (!closedList.contains(mapMemory)&&!openList.contains(mapMemory)) {
+                if (!closedList.contains(mapMemory) && !openList.contains(mapMemory)) {
                     mapMemory.setParentNode(currentExpandNode);
                     openList.add(mapMemory);
                 }
@@ -100,14 +104,14 @@ public class AStarAlgorithm {
 
             //DOWN
             if ((mapMemory.getX() == currentExpandNode.getX()) && ((mapMemory.getY() - 1) == currentExpandNode.getY())) {
-                if (!closedList.contains(mapMemory)&&!openList.contains(mapMemory)) {
+                if (!closedList.contains(mapMemory) && !openList.contains(mapMemory)) {
                     mapMemory.setParentNode(currentExpandNode);
                     openList.add(mapMemory);
                 }
             }
             //LEFT
             if ((mapMemory.getX() + 1 == currentExpandNode.getX()) && ((mapMemory.getY()) == currentExpandNode.getY())) {
-                if (!closedList.contains(mapMemory)&&!openList.contains(mapMemory)) {
+                if (!closedList.contains(mapMemory) && !openList.contains(mapMemory)) {
                     mapMemory.setParentNode(currentExpandNode);
                     openList.add(mapMemory);
                 }
@@ -122,9 +126,6 @@ public class AStarAlgorithm {
     public static void getNodeWithBestFValueAsCurrentExpandNode() {
         currentExpandNode = MapService.selectBestNode();
     }
-
-
-
 
 
     public static void setPlayerLocAsCurrentExpandNode() {
@@ -144,21 +145,21 @@ public class AStarAlgorithm {
         }
     }
 
-    public static void checkIfCurrentExpandNodeHasFlag(){
-        if(AStarAlgorithm.currentExpandNode.getIsFlag()==true){
+    public static void checkIfCurrentExpandNodeHasFlag() {
+        if (AStarAlgorithm.currentExpandNode.getIsFlag() == true) {
             mapMemoryWithFlag = currentExpandNode;
         }
     }
 
-    public static List<MovePoint> getMovePointsList(){
+    public static List<MovePoint> getMovePointsList() {
         List<MovePoint> movePointsList = new ArrayList<>();
-        MovePoint movePoint = new MovePoint(mapMemoryWithFlag.getX(),mapMemoryWithFlag.getY());
+        MovePoint movePoint = new MovePoint(mapMemoryWithFlag.getX(), mapMemoryWithFlag.getY());
 
         MapMemory mapMemoryWithPlayer = mapMemoryWithFlag;
         movePointsList.add(movePoint);
-        while(mapMemoryWithPlayer.getIsPlayer()==false){
-            mapMemoryWithPlayer =mapMemoryWithPlayer.getParentNode();
-            if(mapMemoryWithPlayer.getIsPlayer()==false) {
+        while (mapMemoryWithPlayer.getIsPlayer() == false) {
+            mapMemoryWithPlayer = mapMemoryWithPlayer.getParentNode();
+            if (mapMemoryWithPlayer.getIsPlayer() == false) {
                 movePoint = new MovePoint(mapMemoryWithPlayer.getX(), mapMemoryWithPlayer.getY());
                 movePointsList.add(movePoint);
             }

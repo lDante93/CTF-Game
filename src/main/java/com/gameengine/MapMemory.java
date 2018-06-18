@@ -8,9 +8,9 @@ public class MapMemory {
     private Integer x;
     private Integer y;
     private Integer MapValue;
-    private Integer GMapValue;
+    private Double GMapValue;
     private Integer HMapValue;
-    private Integer FMapValue;
+    private Double FMapValue;
     private Boolean isPlayer = false;
     private Boolean isFlag = false;
     private MapMemory parentNode;

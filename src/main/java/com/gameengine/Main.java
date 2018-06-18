@@ -1,5 +1,6 @@
 package com.gameengine;
 
+import com.connection.InitialiseConnectionResponse;
 import com.connection.ServerConnection;
 import com.connection.ServerResponse;
 import com.domain.MovePoint;
@@ -17,7 +18,7 @@ public class Main {
 
             //INITIALISE CONNECTION WITH PLAYER NAME
             ServerConnection.initialiseConnection();
-            ServerConnection.serverRequest("Connect", "Player One", null);
+            ServerConnection.serverRequest("Connect", "Lukasz Franczyk", null);
 
             //INITIALISE VALUES FROM SERVER RESPONSE AND ALGORITHM
             getServerResponse();
@@ -45,10 +46,12 @@ public class Main {
         //MOVING
         while ((MapService.player.getHasFlag() == false) || !((MapService.player.getX()==MapService.player.getBasePosition().getX()) && (MapService.player.getY()==MapService.player.getBasePosition().getY()))) {
             MovePoint movePoint = movePointsList.remove(movePointsList.size() - 1);
-            if (MapService.player.getMovesLeft() <= 2) {
+            if (MapService.player.getMovesLeft() < 4.5) {
                 if (getMapMemoryMapValue(movePoint) > MapService.player.getMovesLeft()) {
                     System.out.println(getMapMemoryMapValue(movePoint));
                     directionToMove = "NO_MOVE";
+                }else{
+                    directionToMove = getMoveDirection(movePoint);
                 }
             } else {
                 directionToMove = getMoveDirection(movePoint);
@@ -62,7 +65,7 @@ public class Main {
             option = scanner.nextLine();
             if (option != null) {
                 ServerConnection.objectList.clear();
-                ServerConnection.serverRequest("Move", "Player One", directionToMove);
+                ServerConnection.serverRequest("Move", "Lukasz Franczyk", directionToMove);
                 Thread.sleep(100);
             }
 
@@ -76,11 +79,18 @@ public class Main {
         System.out.println("HAVE A FLAG");
     }
 
-    public static Integer getMapMemoryMapValue(MovePoint movePoint) {
+    public static Double getMapMemoryMapValue(MovePoint movePoint) {
         for (MapMemory mapMemory : MapService.mapMemoryList) {
-            if ((movePoint.getX() == mapMemory.getX()) && (movePoint.getY() == mapMemory.getY())) {
-                return mapMemory.getMapValue();
+            if(MapService.player.getHasFlag()){
+                if ((movePoint.getX() == mapMemory.getX()) && (movePoint.getY() == mapMemory.getY())) {
+                    return mapMemory.getMapValue()*1.5;
+                }
+            }else{
+                if ((movePoint.getX() == mapMemory.getX()) && (movePoint.getY() == mapMemory.getY())) {
+                    return mapMemory.getMapValue()*1.0;
+                }
             }
+
         }
         throw new RuntimeException("CAN'T GET MAPVALUE FROM MOVEPOINTS MAPMEMORY");
 
@@ -91,19 +101,23 @@ public class Main {
 
 
             while (ServerConnection.objectList.size()<2) {
-                System.out.println(ServerConnection.objectList.size());
                 Thread.sleep(100);
             }
         for (Object object : ServerConnection.objectList) {
             if (object instanceof ServerResponse) {
                 serverResponse = (ServerResponse) object;
                 MapService.map = serverResponse.getMap().getFields();
-                MapService.player = serverResponse.getPlayers().get(0);
+                System.out.println(MapService.playerId);
+                if(serverResponse.getPlayers().size()>1){
+                    MapService.player = serverResponse.getPlayers().get(MapService.playerId);
+                }else{
+                    MapService.player = serverResponse.getPlayers().get(0);
+                }
                 if(MapService.player.getHasFlag()==false) {
                     MovePoint destination = new MovePoint(serverResponse.getFlag().getX(), serverResponse.getFlag().getY());
                     MapService.destinationCoordinates = destination;
                 }else{
-                    MovePoint destination = new MovePoint(serverResponse.getPlayers().get(0).getBasePosition().getX(), serverResponse.getPlayers().get(0).getBasePosition().getY());
+                    MovePoint destination = new MovePoint(MapService.player.getBasePosition().getX(), MapService.player.getBasePosition().getY());
                     MapService.destinationCoordinates = destination;
                 }
             }
