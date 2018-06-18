@@ -1,6 +1,8 @@
 package com.gameengine;
 
 
+import com.domain.MovePoint;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,7 @@ public class AStarAlgorithm {
     static List<MapMemory> closedList = new ArrayList<>();
     static List<MapMemory> openList = new ArrayList<>();
     static MapMemory currentExpandNode;
+    static MapMemory mapMemoryWithFlag;
 
 
     public static void calculateAlgorithmValuesForOpenList() {
@@ -72,7 +75,7 @@ public class AStarAlgorithm {
 
 
     public static Integer calculateHeurestic(MapMemory mapMemory) {
-        Integer heuresticValue = Math.abs((mapMemory.getX() - MapService.flag.getX())) + Math.abs(mapMemory.getY() - MapService.flag.getY());
+        Integer heuresticValue = Math.abs((mapMemory.getX() - MapService.destinationCoordinates.getX())) + Math.abs(mapMemory.getY() - MapService.destinationCoordinates.getY());
         return heuresticValue;
     }
 
@@ -143,7 +146,23 @@ public class AStarAlgorithm {
 
     public static void checkIfCurrentExpandNodeHasFlag(){
         if(AStarAlgorithm.currentExpandNode.getIsFlag()==true){
-            System.out.println("!!!!!!!!!!!FOUND FLAG!!!!!!!!!!!!!!!!!");
+            mapMemoryWithFlag = currentExpandNode;
         }
+    }
+
+    public static List<MovePoint> getMovePointsList(){
+        List<MovePoint> movePointsList = new ArrayList<>();
+        MovePoint movePoint = new MovePoint(mapMemoryWithFlag.getX(),mapMemoryWithFlag.getY());
+
+        MapMemory mapMemoryWithPlayer = mapMemoryWithFlag;
+        movePointsList.add(movePoint);
+        while(mapMemoryWithPlayer.getIsPlayer()==false){
+            mapMemoryWithPlayer =mapMemoryWithPlayer.getParentNode();
+            if(mapMemoryWithPlayer.getIsPlayer()==false) {
+                movePoint = new MovePoint(mapMemoryWithPlayer.getX(), mapMemoryWithPlayer.getY());
+                movePointsList.add(movePoint);
+            }
+        }
+        return movePointsList;
     }
 }

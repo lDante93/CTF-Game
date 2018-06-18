@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-
-public class Flag {
-    private Integer x;
-    private Integer y;
+@AllArgsConstructor
+public class MovePoint {
+    Integer x;
+    Integer y;
 }

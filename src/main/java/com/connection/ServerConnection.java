@@ -14,11 +14,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServerConnection {
     public static Gson gson;
     public static WebSocketClient mWs;
-    public static Object object;
+    public static List<Object> objectList = new ArrayList<>();
 
     public static void initialiseConnection() throws URISyntaxException {
         mWs = new WebSocketClient(new URI("ws://localhost:8000"), new Draft_6455()) {
@@ -39,25 +41,25 @@ public class ServerConnection {
                     case "Connected": {
                         InitialiseConnectionResponse initialiseConnectionResponse = gson.fromJson(message, InitialiseConnectionResponse.class);
                         System.out.println("OBJECT: " + initialiseConnectionResponse);
-                        object = initialiseConnectionResponse;
+                        objectList.add(initialiseConnectionResponse);
                         break;
                     }
                     case "MoveRequest": {
                         ServerResponse serverResponse = gson.fromJson(message, ServerResponse.class);
                         System.out.println("OBJECT: " + serverResponse);
-                        object = serverResponse;
+                        objectList.add(serverResponse);
                         break;
                     }
                     case "ResponseOK": {
                         ResponseOK responseOK = gson.fromJson(message, ResponseOK.class);
                         System.out.println("OBJECT: " + responseOK);
-                        object = responseOK;
+                        objectList.add(responseOK);
                         break;
                     }
                     case "Error": {
                         ErrorResponse errorResponse = gson.fromJson(message, ErrorResponse.class);
                         System.out.println("OBJECT: " + errorResponse);
-                        object = errorResponse;
+                        objectList.add(errorResponse);
                         break;
                     }
                 }
@@ -67,12 +69,16 @@ public class ServerConnection {
 
             @Override
             public void onOpen(ServerHandshake handshake) {
+                System.out.print(Colours.PURPLE_BOLD_BRIGHT);
                 System.out.println("CLIENT - Opened connection to SERVER.");
+                System.out.println(Colours.RESET);
             }
 
             @Override
             public void onClose(int code, String reason, boolean remote) {
+                System.out.print(Colours.PURPLE_BOLD_BRIGHT);
                 System.out.println("CLIENT - Closed connection to SERVER.");
+                System.out.println(Colours.RESET);
             }
 
             @Override
