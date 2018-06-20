@@ -82,11 +82,11 @@ public class Main {
         for (MapMemory mapMemory : MapService.mapMemoryList) {
             if (MapService.player.getHasFlag()) {
                 if ((movePoint.getX() == mapMemory.getX()) && (movePoint.getY() == mapMemory.getY())) {
-                    return mapMemory.getMapValue() * 1.5;
+                    return mapMemory.getMapValue() + 1.5;
                 }
             } else {
                 if ((movePoint.getX() == mapMemory.getX()) && (movePoint.getY() == mapMemory.getY())) {
-                    return mapMemory.getMapValue() * 1.0;
+                    return mapMemory.getMapValue().doubleValue();
                 }
             }
 

@@ -16,10 +16,10 @@ public class AStarAlgorithm {
 
     public static void calculateAlgorithmValuesForOpenList() {
         for (MapMemory mapMemory : openList) {
-            Double GValue = mapMemory.getMapValue() * 1.0;
+            Double GValue = mapMemory.getMapValue().doubleValue();
             if (MapService.player.getHasFlag() == true) {
 
-                GValue = mapMemory.getMapValue() * 1.5;
+                GValue = mapMemory.getMapValue() + 1.5;
             }
             Double FValue = GValue + mapMemory.getHMapValue();
             mapMemory.setGMapValue(GValue);
